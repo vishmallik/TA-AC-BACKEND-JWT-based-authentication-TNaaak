@@ -1,6 +1,11 @@
-var express = require("express");
-var router = express.Router();
+const express = require("express");
+const router = express.Router();
 const User = require("../models/user");
+const auth = require("../middlewares/auth");
+
+router.get("/", auth.verifyToken, (req, res, next) => {
+  res.json({ success: "You have reached protected route" });
+});
 
 router.post("/register", async (req, res, next) => {
   try {
