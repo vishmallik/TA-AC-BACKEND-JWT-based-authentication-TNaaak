@@ -5,12 +5,17 @@ const cookieParser = require("cookie-parser");
 const logger = require("morgan");
 const mongoose = require("mongoose");
 
+require("dotenv").config();
+
 mongoose.connect("mongodb://127.0.0.1/conduit", (err) => {
   console.log(err ? err : "connected to Database");
 });
 
-const indexRouter = require("./routes/index");
 const usersRouter = require("./routes/users");
+const userRouter = require("./routes/user");
+const profilesRouter = require("./routes/profiles");
+const articlesRouter = require("./routes/articles");
+const tagsRouter = require("./routes/tags");
 
 const app = express();
 
@@ -20,8 +25,11 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
-app.use("/", indexRouter);
-app.use("/users", usersRouter);
+app.use("/api/users", usersRouter);
+app.use("/api/user", userRouter);
+app.use("/api/profiles", profilesRouter);
+app.use("/api/articles", articlesRouter);
+app.use("/api/tags", tagsRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
@@ -36,7 +44,7 @@ app.use(function (err, req, res, next) {
 
   // render the error page
   res.status(err.status || 500);
-  res.json({ error });
+  res.json({ errors: { body: [err] } });
 });
 
 module.exports = app;
